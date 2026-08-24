@@ -7,8 +7,6 @@ import { Projects } from './components/Projects';
 import { Services } from './components/Services';
 import { Footer } from './components/Footer';
 import { Navbar } from './components/Navbar';
-import { Work } from './components/Work';
-import { ProjectDetail } from './components/ProjectDetail';
 import { Members } from './components/Members';
 import { Events } from './components/Events';
 import { WhatYouGet } from './components/WhatYouGet';
@@ -101,8 +99,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             {/* The standalone members page is gone; keep old links working. */}
             <Route path="/members" element={<Navigate to="/#membership" replace />} />
-            <Route path="/work" element={<Work />} />
-            <Route path="/work/:slug" element={<ProjectDetail />} />
+            {/* Anything else (incl. the retired /work pages) falls back home. */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       )}
