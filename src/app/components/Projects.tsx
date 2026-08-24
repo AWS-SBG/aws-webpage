@@ -177,7 +177,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
      enters alone, so an index delay just leaves it blank after it is already visible. */
   const staggered = useMediaQuery('(min-width: 640px)');
   /* Touch fires pointerenter with no pointerleave, which leaves a tapped card stuck lifted. */
-  const canHover = useMediaQuery('(hover: hover)');
+  const canHover = useMediaQuery('(hover: hover) and (pointer: fine)');
 
   return (
     <motion.div
@@ -192,7 +192,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
         ease: [0.16, 1, 0.3, 1],
       }}
       whileHover={canHover && !reduceMotion ? { y: -8 } : undefined}
-      className="group h-full flex flex-col overflow-hidden rounded-2xl bg-[#00274C] shadow-sm hover:shadow-xl transition-shadow duration-500"
+      className={`group h-full flex flex-col overflow-hidden rounded-2xl bg-[#00274C] shadow-sm transition-shadow duration-500 ${
+        canHover ? 'hover:shadow-xl' : ''
+      }`}
     >
       {/* Photo panel — square to match the source crops, so nothing gets re-cropped. */}
       <div className="relative w-full aspect-square overflow-hidden">
@@ -200,7 +202,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
           <img
             src={member.image}
             alt={member.name}
-            className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            className={`w-full h-full object-cover object-center ${
+              canHover ? 'transition-transform duration-700 ease-out group-hover:scale-[1.04]' : ''
+            }`}
           />
         ) : (
           /* No headshot yet — stand the club mark in its place. */
