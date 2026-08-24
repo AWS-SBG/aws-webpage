@@ -37,6 +37,7 @@ const team: TeamMember[] = [
     name: 'Jordan Ayling',
     title: 'President',
     gradYear: '2028',
+    major: 'Computer Science',
     interests: ['Building in all aspects'],
     funFact:
       "I'm a Navy veteran and love traveling the world when I can: Japan, Costa Rica, Puerto Rico, Mexico. Next up are Canada and the Dolomites in Italy.",
@@ -105,21 +106,8 @@ const detailRows = (member: TeamMember): [string, string][] => {
   return rows;
 };
 
-/** Clamps the last row so one long fun fact can't drive every card's height.
- *  The full text stays reachable via `title`. */
-const CLAMP_LINES = {
-  display: '-webkit-box',
-  WebkitLineClamp: 3,
-  WebkitBoxOrient: 'vertical' as const,
-  overflow: 'hidden',
-};
-
-const DetailRow = ({ label, value, clamp }: { label: string; value: string; clamp?: boolean }) => (
-  <p
-    className="text-[12px] leading-relaxed text-white/75"
-    title={clamp && value ? value : undefined}
-    style={clamp ? CLAMP_LINES : undefined}
-  >
+const DetailRow = ({ label, value }: { label: string; value: string }) => (
+  <p className="text-[12px] leading-relaxed text-white/75">
     <span className="font-bold text-white">{label}:</span>{' '}
     <span className={value ? '' : 'italic text-white/40'}>{value || 'TBA'}</span>
   </p>
@@ -170,27 +158,26 @@ const useMediaQuery = (query: string): boolean => {
   return matches;
 };
 
-const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
+const TeamCard = ({ member }: { member: TeamMember }) => {
   const rows = detailRows(member);
   const reduceMotion = useReducedMotion();
-  /* The stagger only makes sense when cards share a row. Single-column, each card
-     enters alone, so an index delay just leaves it blank after it is already visible. */
-  const staggered = useMediaQuery('(min-width: 640px)');
+  const wide = useMediaQuery('(min-width: 640px)');
   /* Touch fires pointerenter with no pointerleave, which leaves a tapped card stuck lifted. */
   const canHover = useMediaQuery('(hover: hover) and (pointer: fine)');
 
+  /* A scroll-triggered fade races the scroll itself. A finger flick moves 2000-4000px/s,
+     so any practical head start is a few dozen ms against a 500ms animation — the card
+     lands on screen still half transparent and reads as a flash. Single column has no
+     stagger to justify the risk, so cards there just render. Wide screens keep the
+     animation but trigger 400px early, far enough to finish before anything is visible. */
+  const animateIn = wide && !reduceMotion;
+
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      /* Trigger ahead of the viewport edge so the rise finishes before it is on screen,
-         instead of playing against an active scroll. */
-      viewport={{ once: true, margin: '0px 0px 120px 0px' }}
-      transition={{
-        duration: 0.5,
-        delay: staggered ? index * 0.08 : 0,
-        ease: [0.16, 1, 0.3, 1],
-      }}
+      initial={animateIn ? { opacity: 0, y: 18 } : false}
+      whileInView={animateIn ? { opacity: 1, y: 0 } : undefined}
+      viewport={{ once: true, margin: '0px 0px 800px 0px' }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       whileHover={canHover && !reduceMotion ? { y: -8 } : undefined}
       className={`group h-full flex flex-col overflow-hidden rounded-2xl bg-[#00274C] shadow-sm transition-shadow duration-500 ${
         canHover ? 'hover:shadow-xl' : ''
@@ -231,8 +218,8 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
         </p>
 
         <div className="mt-3 space-y-1.5">
-          {rows.map(([label, value], i) => (
-            <DetailRow key={label} label={label} value={value} clamp={i === rows.length - 1} />
+          {rows.map(([label, value]) => (
+            <DetailRow key={label} label={label} value={value} />
           ))}
         </div>
 
@@ -268,7 +255,7 @@ export const Projects = () => {
         {/* Team Grid — all five in one row on large screens, equal height */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 items-stretch">
           {team.map((member, index) => (
-            <TeamCard key={index} member={member} index={index} />
+            <TeamCard key={index} member={member} />
           ))}
         </div>
 
