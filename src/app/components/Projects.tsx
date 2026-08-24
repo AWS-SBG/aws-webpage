@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { UserRound, Github, Linkedin, Instagram, Mail, Globe, Youtube } from 'lucide-react';
+import { Github, Linkedin, Instagram, Mail, Globe, Youtube } from 'lucide-react';
 
 /** Add a key here and it becomes available on every member's `socials` object. */
 const SOCIAL_ICONS = {
@@ -21,6 +21,12 @@ interface TeamMember {
   gradYear: string;
   interests: string[];
   funFact: string;
+  /** Optional — only the ones provided become rows, so no member shows filler. */
+  pronouns?: string;
+  major?: string;
+  hometown?: string;
+  /** Rendered in place of `funFact`, under its own label. */
+  hotTake?: string;
   image?: string;
   /** Plug in URLs later — only the keys present render an icon. */
   socials?: Partial<Record<SocialKey, string>>;
@@ -35,41 +41,70 @@ const team: TeamMember[] = [
     funFact:
       "I'm a Navy veteran and love traveling the world when I can: Japan, Costa Rica, Puerto Rico, Mexico. Next up are Canada and the Dolomites in Italy.",
     image: '/team/jordan-ayling.jpg',
-    socials: {},
+    socials: {
+      github: 'https://github.com/JordanAyl',
+      linkedin: 'https://www.linkedin.com/in/jordan-ayling-darial/',
+    },
   },
   {
-    name: '',
-    title: 'Vice President',
+    name: 'Justin Lagman',
+    title: 'Vice President & Design',
     gradYear: '',
     interests: [],
     funFact: '',
-    socials: {},
+    socials: { linkedin: 'https://www.linkedin.com/in/justin-lagman/' },
   },
   {
-    name: '',
-    title: 'Head of Engineering',
+    name: 'Yunying (Yuni) Zhang',
+    title: 'Head of Cloud Engineering',
+    pronouns: 'She/her',
     gradYear: '',
+    major: 'Computer Science',
+    hometown: 'Midland, MI',
     interests: [],
     funFact: '',
-    socials: {},
+    hotTake: 'Python indexing should start at 1',
+    image: '/team/yunying-zhang.jpg',
+    socials: { linkedin: 'https://www.linkedin.com/in/yunying-zhang-5440662a9' },
   },
   {
-    name: '',
-    title: 'Head of Events',
-    gradYear: '',
-    interests: [],
-    funFact: '',
-    socials: {},
+    name: 'Shiraaz Haidar',
+    title: 'Head of Financial Engineering',
+    gradYear: '2029',
+    interests: ['AI', 'Design'],
+    funFact:
+      "I'm currently developing a personalized AI assistant for my room! Outside of tech, I'm passionate about languages and am planning to study abroad in Spain.",
+    image: '/team/shiraaz-haidar.jpg',
+    socials: { linkedin: 'https://www.linkedin.com/in/shiraazhaidar/' },
   },
   {
-    name: '',
-    title: 'Head of Marketing',
+    name: 'Arnav Kodwani',
+    title: 'Head of Technologies',
+    pronouns: 'He/Him',
     gradYear: '',
+    major: 'Computer Science',
+    hometown: 'Troy, MI',
     interests: [],
     funFact: '',
-    socials: {},
+    hotTake: "Emojis have peaked, we don't need more",
+    socials: { linkedin: 'https://www.linkedin.com/in/arnavkodwani/' },
   },
 ];
+
+/** A member shows only the fields they actually supplied. Anyone with nothing
+ *  filled in yet — named or not — keeps the standard three-row TBA skeleton so
+ *  the grid stays even and the card reads as pending rather than empty. */
+const detailRows = (member: TeamMember): [string, string][] => {
+  const rows: [string, string][] = [];
+  if (member.gradYear) rows.push(['Grad Year', member.gradYear]);
+  if (member.major) rows.push(['Major', member.major]);
+  if (member.hometown) rows.push(['Hometown', member.hometown]);
+  if (member.interests.length) rows.push(['Interests', member.interests.join(', ')]);
+  if (member.hotTake) rows.push(['Hot take', member.hotTake]);
+  else if (member.funFact) rows.push(['Fun fact', member.funFact]);
+
+  return rows.length ? rows : [['Grad Year', ''], ['Interests', ''], ['Fun fact', '']];
+};
 
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <p className="text-[13px] leading-relaxed text-white/85">
@@ -125,8 +160,15 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => (
             className="w-full h-full object-cover object-center"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-white/10">
-            <UserRound className="w-12 h-12 text-white/40" strokeWidth={1.25} />
+          /* No headshot yet — stand the club mark in its place. Inset to 80% so the
+             chip's corners clear the circular crop; its baked-in navy matches the card. */
+          <div className="w-full h-full flex items-center justify-center bg-[#00274C]">
+            <img
+              src="/wolverine-builder.png"
+              alt=""
+              aria-hidden="true"
+              className="w-[80%] h-[80%] object-contain"
+            />
           </div>
         )}
       </div>
@@ -136,13 +178,16 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => (
     <h3 className={`text-lg text-center font-light mb-2 ${member.name ? 'text-white' : 'text-white/40'}`}>
       {member.name || 'Name to be announced'}
     </h3>
+    {member.pronouns && (
+      <p className="-mt-1 mb-2 text-xs text-center text-white/50">{member.pronouns}</p>
+    )}
     <p className="text-sm font-bold text-center text-white mb-5">{member.title}</p>
 
     {/* Details */}
     <div className="space-y-2">
-      <DetailRow label="Grad Year" value={member.gradYear} />
-      <DetailRow label="Interests" value={member.interests.join(', ')} />
-      <DetailRow label="Fun fact" value={member.funFact} />
+      {detailRows(member).map(([label, value]) => (
+        <DetailRow key={label} label={label} value={value} />
+      ))}
     </div>
 
     <SocialLinks socials={member.socials} />
