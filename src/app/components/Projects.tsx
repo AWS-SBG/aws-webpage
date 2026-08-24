@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Github, Linkedin, Instagram, Mail, Globe, Youtube } from 'lucide-react';
 
 /** Add a key here and it becomes available on every member's `socials` object. */
@@ -153,16 +153,45 @@ const SocialLinks = ({ socials }: { socials?: Partial<Record<SocialKey, string>>
   );
 };
 
+/** Tracks a media query so animation can adapt to layout and input capability. */
+const useMediaQuery = (query: string): boolean => {
+  const [matches, setMatches] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(query).matches,
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+    onChange();
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, [query]);
+
+  return matches;
+};
+
 const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
   const rows = detailRows(member);
+  const reduceMotion = useReducedMotion();
+  /* The stagger only makes sense when cards share a row. Single-column, each card
+     enters alone, so an index delay just leaves it blank after it is already visible. */
+  const staggered = useMediaQuery('(min-width: 640px)');
+  /* Touch fires pointerenter with no pointerleave, which leaves a tapped card stuck lifted. */
+  const canHover = useMediaQuery('(hover: hover)');
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -8 }}
+      /* Trigger ahead of the viewport edge so the rise finishes before it is on screen,
+         instead of playing against an active scroll. */
+      viewport={{ once: true, margin: '0px 0px 120px 0px' }}
+      transition={{
+        duration: 0.5,
+        delay: staggered ? index * 0.08 : 0,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      whileHover={canHover && !reduceMotion ? { y: -8 } : undefined}
       className="group h-full flex flex-col overflow-hidden rounded-2xl bg-[#00274C] shadow-sm hover:shadow-xl transition-shadow duration-500"
     >
       {/* Photo panel — square to match the source crops, so nothing gets re-cropped. */}
