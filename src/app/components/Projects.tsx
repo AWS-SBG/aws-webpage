@@ -87,6 +87,7 @@ const team: TeamMember[] = [
     interests: [],
     funFact: '',
     hotTake: "Emojis have peaked, we don't need more",
+    image: '/team/arnav-kodwani.jpg',
     socials: { linkedin: 'https://www.linkedin.com/in/arnavkodwani/' },
   },
 ];
