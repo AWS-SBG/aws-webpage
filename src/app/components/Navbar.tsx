@@ -19,15 +19,25 @@ export const Navbar = () => {
 
   useEffect(() => { setIsOpen(false); }, [location]);
 
+  // Keep the page behind the overlay from scrolling under it.
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [isOpen]);
+
   const navItems = [
     { name: 'Programs', to: '/#services' },
     { name: 'Events', to: '/#events' },
     { name: 'Members', to: '/#membership' },
+    { name: 'Projects', to: '/#projects' },
     { name: 'Team', to: '/#team' },
     { name: 'Contact', to: '/#connect' },
   ];
 
   return (
+    <>
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -53,7 +63,7 @@ export const Navbar = () => {
         </motion.div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navItems.map((item, i) => (
             <motion.div key={item.name} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.08 }}>
               <Link
@@ -79,32 +89,49 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden z-50 text-[#00274C]">
+        <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden z-50 text-[#00274C]">
           {isOpen ? <X /> : <Menu />}
         </button>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed inset-0 bg-white flex flex-col items-center justify-center gap-10 md:hidden"
-            >
-              {navItems.map((item) => (
-                <Link key={item.name} to={item.to} className="text-3xl font-bold text-[#00274C] hover:text-[#FFCB05] transition-colors">
-                  {item.name}
-                </Link>
-              ))}
-              <a href={SLACK_URL} target="_blank" rel="noopener noreferrer" className="mt-4 px-8 py-3 bg-[#FFCB05] text-[#00274C] font-bold rounded-full text-lg">
-                Join Slack
-              </a>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </motion.nav>
+
+    {/* Mobile Menu — deliberately a sibling of <motion.nav>, not a child. The nav's
+        backdrop-filter (and its transform while animating) creates a containing block,
+        which would make `fixed inset-0` resolve against the 64px bar instead of the
+        viewport and push most of the links off-screen. Sits at z-40 so the nav's own
+        bar, and the close button in it, stay above and reachable. */}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, x: '100%' }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: '100%' }}
+          transition={{ type: 'tween', duration: 0.3 }}
+          className="fixed inset-0 z-40 bg-white lg:hidden overflow-y-auto overscroll-contain"
+        >
+          <div className="min-h-full flex flex-col items-center justify-center gap-7 px-6 py-28">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.to}
+                className="text-3xl font-bold text-[#00274C] hover:text-[#FFCB05] transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+            <a
+              href={SLACK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 px-8 py-3 bg-[#FFCB05] text-[#00274C] font-bold rounded-full text-lg"
+            >
+              Join Slack
+            </a>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
   );
 };
