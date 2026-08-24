@@ -1,5 +1,5 @@
 {
-  "name": "@figma/my-make-file",
+  "name": "aws-student-builder-um",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -89,5 +89,5 @@
     }
   },
   "readme": "ERROR: No README data found!",
-  "_id": "@figma/my-make-file@0.0.1"
+  "_id": "aws-student-builder-um@0.0.1"
 }

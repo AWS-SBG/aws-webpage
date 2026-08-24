@@ -21,6 +21,25 @@ export const Hero = () => {
         style={{ backgroundColor: '#90D5FF' }}
       />
 
+      {/* Logo watermark — bleeds off the top-left as background texture.
+          The artwork's baked-in navy rgb(1,38,76) matches the section's rgb(0,39,76),
+          so the image's square edges composite away; the only visible rectangle is
+          the chip graphic itself. Sits under the dot grid so the dots fall across it. */}
+      <motion.img
+        src="/wolverine-builder.png"
+        alt=""
+        aria-hidden="true"
+        width={640}
+        height={640}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.17 }}
+        transition={{ duration: 1.4, ease: 'easeOut' }}
+        className="absolute top-2 -left-10 md:top-4 md:-left-28 w-[300px] h-[300px] md:w-[540px] md:h-[540px] object-contain pointer-events-none select-none"
+        style={{
+          opacity: 0.17,
+        }}
+      />
+
       {/* Dot grid */}
       <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
         backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px)',
@@ -34,10 +53,9 @@ export const Hero = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-mono uppercase tracking-widest mb-10"
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-mono uppercase tracking-widest mb-8"
         >
-          <span className="w-2 h-2 rounded-full bg-[#FFCB05] animate-pulse" />
           Official AWS Chapter
         </motion.div>
 

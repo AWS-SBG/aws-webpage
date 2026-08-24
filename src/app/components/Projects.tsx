@@ -28,11 +28,13 @@ interface TeamMember {
 
 const team: TeamMember[] = [
   {
-    name: '',
+    name: 'Jordan Ayling',
     title: 'President',
-    gradYear: '',
-    interests: [],
-    funFact: '',
+    gradYear: '2028',
+    interests: ['Building in all aspects'],
+    funFact:
+      "I'm a Navy veteran and love traveling the world when I can: Japan, Costa Rica, Puerto Rico, Mexico. Next up are Canada and the Dolomites in Italy.",
+    image: '/team/jordan-ayling.jpg',
     socials: {},
   },
   {

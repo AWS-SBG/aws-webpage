@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="AWS Student Builder U-M">
+  <rect width="32" height="32" rx="6" fill="#00274C"/>
+  <g fill="#FFCB05" transform="translate(16 16) scale(1.14) translate(-16 -16)">
+    <!-- chip body -->
+    <rect x="8.25" y="8.25" width="15.5" height="15.5" fill="none" stroke="#FFCB05" stroke-width="2.8"/>
+    <!-- top pins -->
+    <rect x="9.5" y="5" width="2.6" height="4.5"/>
+    <rect x="14.7" y="5" width="2.6" height="4.5"/>
+    <rect x="19.9" y="5" width="2.6" height="4.5"/>
+    <!-- bottom pins -->
+    <rect x="9.5" y="22.5" width="2.6" height="4.5"/>
+    <rect x="14.7" y="22.5" width="2.6" height="4.5"/>
+    <rect x="19.9" y="22.5" width="2.6" height="4.5"/>
+    <!-- left pins -->
+    <rect x="5" y="9.5" width="4.5" height="2.6"/>
+    <rect x="5" y="14.7" width="4.5" height="2.6"/>
+    <rect x="5" y="19.9" width="4.5" height="2.6"/>
+    <!-- right pins -->
+    <rect x="22.5" y="9.5" width="4.5" height="2.6"/>
+    <rect x="22.5" y="14.7" width="4.5" height="2.6"/>
+    <rect x="22.5" y="19.9" width="4.5" height="2.6"/>
+  </g>
+</svg>
