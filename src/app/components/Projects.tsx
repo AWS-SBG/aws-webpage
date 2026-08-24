@@ -92,25 +92,36 @@ const team: TeamMember[] = [
   },
 ];
 
-/** A member shows only the fields they actually supplied. Anyone with nothing
- *  filled in yet — named or not — keeps the standard three-row TBA skeleton so
- *  the grid stays even and the card reads as pending rather than empty. */
+/** Grad Year, Interests and the personality line always show — falling back to TBA —
+ *  so every card answers the same questions. Major and Hometown appear only when given. */
 const detailRows = (member: TeamMember): [string, string][] => {
-  const rows: [string, string][] = [];
-  if (member.gradYear) rows.push(['Grad Year', member.gradYear]);
+  const rows: [string, string][] = [
+    ['Grad Year', member.gradYear],
+    ['Interests', member.interests.join(', ')],
+  ];
   if (member.major) rows.push(['Major', member.major]);
   if (member.hometown) rows.push(['Hometown', member.hometown]);
-  if (member.interests.length) rows.push(['Interests', member.interests.join(', ')]);
-  if (member.hotTake) rows.push(['Hot take', member.hotTake]);
-  else if (member.funFact) rows.push(['Fun fact', member.funFact]);
-
-  return rows.length ? rows : [['Grad Year', ''], ['Interests', ''], ['Fun fact', '']];
+  rows.push(member.hotTake ? ['Hot take', member.hotTake] : ['Fun fact', member.funFact]);
+  return rows;
 };
 
-const DetailRow = ({ label, value }: { label: string; value: string }) => (
-  <p className="text-[13px] leading-relaxed text-white/85">
+/** Clamps the last row so one long fun fact can't drive every card's height.
+ *  The full text stays reachable via `title`. */
+const CLAMP_LINES = {
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical' as const,
+  overflow: 'hidden',
+};
+
+const DetailRow = ({ label, value, clamp }: { label: string; value: string; clamp?: boolean }) => (
+  <p
+    className="text-[12px] leading-relaxed text-white/75"
+    title={clamp && value ? value : undefined}
+    style={clamp ? CLAMP_LINES : undefined}
+  >
     <span className="font-bold text-white">{label}:</span>{' '}
-    <span className={value ? '' : 'text-white/40 italic'}>{value || 'TBA'}</span>
+    <span className={value ? '' : 'italic text-white/40'}>{value || 'TBA'}</span>
   </p>
 );
 
@@ -142,58 +153,61 @@ const SocialLinks = ({ socials }: { socials?: Partial<Record<SocialKey, string>>
   );
 };
 
-const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-    whileHover={{ y: -8 }}
-    className="group h-full flex flex-col bg-[#00274C] rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-500"
-  >
-    {/* Avatar */}
-    <div className="flex justify-center mb-6">
-      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white bg-[#F4F6F9] shrink-0">
+const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
+  const rows = detailRows(member);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -8 }}
+      className="group h-full flex flex-col overflow-hidden rounded-2xl bg-[#00274C] shadow-sm hover:shadow-xl transition-shadow duration-500"
+    >
+      {/* Photo panel — square to match the source crops, so nothing gets re-cropped. */}
+      <div className="relative w-full aspect-square overflow-hidden">
         {member.image ? (
           <img
             src={member.image}
             alt={member.name}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         ) : (
-          /* No headshot yet — stand the club mark in its place. Inset to 80% so the
-             chip's corners clear the circular crop; its baked-in navy matches the card. */
+          /* No headshot yet — stand the club mark in its place. */
           <div className="w-full h-full flex items-center justify-center bg-[#00274C]">
             <img
               src="/wolverine-builder.png"
               alt=""
               aria-hidden="true"
-              className="w-[80%] h-[80%] object-contain"
+              className="w-1/2 h-1/2 object-contain"
             />
           </div>
         )}
+        {/* Scrim so the photo settles into the card instead of ending on a hard edge. */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#00274C] to-transparent pointer-events-none" />
       </div>
-    </div>
 
-    {/* Name + role */}
-    <h3 className={`text-lg text-center font-light mb-2 ${member.name ? 'text-white' : 'text-white/40'}`}>
-      {member.name || 'Name to be announced'}
-    </h3>
-    {member.pronouns && (
-      <p className="-mt-1 mb-2 text-xs text-center text-white/50">{member.pronouns}</p>
-    )}
-    <p className="text-sm font-bold text-center text-white mb-5">{member.title}</p>
+      <div className="relative -mt-4 flex flex-1 flex-col px-5 pb-5">
+        <h3 className={`text-base font-medium leading-tight ${member.name ? 'text-white' : 'text-white/40'}`}>
+          {member.name || 'Name to be announced'}
+        </h3>
+        {member.pronouns && <p className="mt-0.5 text-[11px] text-white/55">{member.pronouns}</p>}
+        <p className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FFCB05]">
+          {member.title}
+        </p>
 
-    {/* Details */}
-    <div className="space-y-2">
-      {detailRows(member).map(([label, value]) => (
-        <DetailRow key={label} label={label} value={value} />
-      ))}
-    </div>
+        <div className="mt-3 space-y-1.5">
+          {rows.map(([label, value], i) => (
+            <DetailRow key={label} label={label} value={value} clamp={i === rows.length - 1} />
+          ))}
+        </div>
 
-    <SocialLinks socials={member.socials} />
-  </motion.div>
-);
+        <SocialLinks socials={member.socials} />
+      </div>
+    </motion.div>
+  );
+};
 
 export const Projects = () => {
   return (
