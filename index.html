@@ -7,15 +7,29 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>AWS Student Builder U-M</title>
       <meta name="description" content="The AWS Student Builder Group at the University of Michigan — a student community that builds, learns, and ships real projects on AWS. Join us for workshops, events, and hands-on cloud experience." />
+      <!-- The SVG chip stays the tab icon: the wolverine's linework is unreadable at 16px.
+           Apple/Android icons use the full mark, which is opaque navy — a transparent PNG
+           gets composited onto the platform's own grey placeholder. -->
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <link rel="icon" type="image/png" href="/logo.png" />
-      <link rel="apple-touch-icon" href="/logo.png" />
+      <link rel="icon" type="image/png" sizes="640x640" href="/wolverine-builder.png" />
+      <link rel="apple-touch-icon" href="/wolverine-builder.png" />
       <meta name="theme-color" content="#00274C" />
+
+      <!-- Link previews. og:image must be an absolute URL — most scrapers will not
+           resolve a relative one and simply render no image. -->
       <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="AWS Student Builder Group at U-M" />
+      <meta property="og:url" content="https://umichbuilders.com/" />
       <meta property="og:title" content="AWS Student Builder U-M" />
       <meta property="og:description" content="The AWS Student Builder Group at the University of Michigan — build, learn, and ship real projects on AWS." />
-      <meta property="og:image" content="/logo.png" />
-      <meta name="twitter:card" content="summary" />
+      <meta property="og:image" content="https://umichbuilders.com/og-image.png" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="AWS Student Builder Group at the University of Michigan" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="AWS Student Builder U-M" />
+      <meta name="twitter:description" content="Free AWS credits, certification vouchers, and workshops run with AWS engineers, open to all U-M students." />
+      <meta name="twitter:image" content="https://umichbuilders.com/og-image.png" />
       <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
       
     </head>
