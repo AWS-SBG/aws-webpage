@@ -73,6 +73,7 @@ const team: TeamMember[] = [
     name: 'Shiraaz Haidar',
     title: 'Head of Financial Engineering',
     gradYear: '2029',
+    major: 'Computer Science',
     interests: ['AI', 'Design'],
     funFact:
       "I'm currently developing a personalized AI assistant for my room! Outside of tech, I'm passionate about languages and am planning to study abroad in Spain.",
