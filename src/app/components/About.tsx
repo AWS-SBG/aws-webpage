@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'motion/react';
+import { useFadeIn } from '../lib/motion';
 import { CheckCircle } from 'lucide-react';
 
 const highlights = [
@@ -9,6 +10,7 @@ const highlights = [
 ];
 
 export const About = () => {
+  const fadeIn = useFadeIn();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
   const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
@@ -31,8 +33,8 @@ export const About = () => {
           {/* Text Content */}
           <div className="relative z-10">
             <motion.h2
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={fadeIn ? { opacity: 0, y: 60 } : { y: 60 }}
+              whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="text-5xl md:text-7xl font-bold tracking-tighter mb-10 leading-[0.9] text-[#00274C]"
@@ -43,8 +45,8 @@ export const About = () => {
 
             <div className="grid md:grid-cols-2 gap-10 text-base font-normal text-[#5a6474] leading-relaxed mb-12">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={fadeIn ? { opacity: 0, y: 20 } : { y: 20 }}
+                whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2, duration: 0.7 }}
                 className="space-y-4"
@@ -53,8 +55,8 @@ export const About = () => {
                 <p>We cover security, AI, business analytics, and the real-world skills employers are actively hiring for.</p>
               </motion.div>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={fadeIn ? { opacity: 0, y: 20 } : { y: 20 }}
+                whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3, duration: 0.7 }}
                 className="space-y-4"
@@ -71,8 +73,8 @@ export const About = () => {
                 {highlights.map((item, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={fadeIn ? { opacity: 0, x: -20 } : { x: -20 }}
+                    whileInView={fadeIn ? { opacity: 1, x: 0 } : { x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
                     className="flex items-start gap-3 text-[#0d1117] font-light"
@@ -102,8 +104,8 @@ export const About = () => {
 
             {/* Floating tag */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={fadeIn ? { opacity: 0, y: 20 } : { y: 20 }}
+              whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
               className="absolute -bottom-6 -left-6 bg-[#FFCB05] text-[#00274C] px-5 py-3 rounded-xl font-bold text-sm shadow-lg"

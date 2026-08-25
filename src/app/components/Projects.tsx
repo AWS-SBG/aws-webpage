@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { useFadeIn, useMediaQuery } from '../lib/motion';
 import { Github, Linkedin, Instagram, Mail, Globe, Youtube } from 'lucide-react';
 
 /** Add a key here and it becomes available on every member's `socials` object. */
@@ -141,41 +142,18 @@ const SocialLinks = ({ socials }: { socials?: Partial<Record<SocialKey, string>>
   );
 };
 
-/** Tracks a media query so animation can adapt to layout and input capability. */
-const useMediaQuery = (query: string): boolean => {
-  const [matches, setMatches] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(query).matches,
-  );
-
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const onChange = () => setMatches(mql.matches);
-    onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, [query]);
-
-  return matches;
-};
-
 const TeamCard = ({ member }: { member: TeamMember }) => {
   const rows = detailRows(member);
   const reduceMotion = useReducedMotion();
-  const wide = useMediaQuery('(min-width: 640px)');
+  /* Narrow screens slide without fading — see useFadeIn for why. */
+  const fadeIn = useFadeIn();
   /* Touch fires pointerenter with no pointerleave, which leaves a tapped card stuck lifted. */
   const canHover = useMediaQuery('(hover: hover) and (pointer: fine)');
 
-  /* A scroll-triggered fade races the scroll itself. A finger flick moves 2000-4000px/s,
-     so any practical head start is a few dozen ms against a 500ms animation — the card
-     lands on screen still half transparent and reads as a flash. Single column has no
-     stagger to justify the risk, so cards there just render. Wide screens keep the
-     animation but trigger 400px early, far enough to finish before anything is visible. */
-  const animateIn = wide && !reduceMotion;
-
   return (
     <motion.div
-      initial={animateIn ? { opacity: 0, y: 18 } : false}
-      whileInView={animateIn ? { opacity: 1, y: 0 } : undefined}
+      initial={reduceMotion ? false : fadeIn ? { opacity: 0, y: 18 } : { y: 18 }}
+      whileInView={reduceMotion ? undefined : fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
       viewport={{ once: true, margin: '0px 0px 800px 0px' }}
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       whileHover={canHover && !reduceMotion ? { y: -8 } : undefined}
@@ -230,6 +208,7 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
 };
 
 export const Projects = () => {
+  const fadeIn = useFadeIn();
   return (
     <section id="team" className="py-24 px-6 bg-white relative overflow-hidden scroll-mt-24">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[140px] opacity-10 pointer-events-none" style={{ backgroundColor: '#FFCB05' }} />
@@ -238,8 +217,8 @@ export const Projects = () => {
 
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={fadeIn ? { opacity: 0, y: 40 } : { y: 40 }}
+          whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
           viewport={{ once: true }}
           className="mb-14"
         >

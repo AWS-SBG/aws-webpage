@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useFadeIn } from '../lib/motion';
 import { Zap, Award, BookOpen, Cpu, Trophy, Users } from 'lucide-react';
 
 const perks = [
@@ -48,6 +49,7 @@ const perks = [
 ];
 
 export const WhatYouGet = () => {
+  const fadeIn = useFadeIn();
   return (
     <section id="services" className="py-24 px-6 bg-[#F4F6F9] relative overflow-hidden scroll-mt-24">
       <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ backgroundColor: '#90D5FF' }} />
@@ -62,8 +64,8 @@ export const WhatYouGet = () => {
               <div className="h-px w-20 bg-[#90D5FF]" />
             </div>
             <motion.h2
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={fadeIn ? { opacity: 0, y: 40 } : { y: 40 }}
+              whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
               className="text-5xl md:text-7xl font-bold tracking-tighter leading-none text-[#00274C]"
@@ -72,8 +74,8 @@ export const WhatYouGet = () => {
             </motion.h2>
           </div>
           <motion.p
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={fadeIn ? { opacity: 0, x: 20 } : { x: 20 }}
+            whileInView={fadeIn ? { opacity: 1, x: 0 } : { x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.7 }}
             className="text-lg font-light text-[#5a6474] max-w-sm leading-relaxed"
@@ -87,8 +89,8 @@ export const WhatYouGet = () => {
           {perks.map((perk, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={fadeIn ? { opacity: 0, y: 40 } : { y: 40 }}
+              whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -4 }}

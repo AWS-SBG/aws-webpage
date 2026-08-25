@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useFadeIn } from '../lib/motion';
 import { BookOpen, Gamepad2, Users, Network } from 'lucide-react';
 
 const allMemberPerks = [
@@ -27,6 +28,7 @@ const allMemberPerks = [
 
 
 export const Members = () => {
+  const fadeIn = useFadeIn();
   return (
     <section id="membership" className="py-24 px-6 bg-[#F4F6F9] relative overflow-hidden scroll-mt-24">
       <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full blur-[140px] opacity-20 pointer-events-none" style={{ backgroundColor: '#90D5FF' }} />
@@ -35,8 +37,8 @@ export const Members = () => {
 
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={fadeIn ? { opacity: 0, y: 40 } : { y: 40 }}
+          whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-14"
@@ -56,8 +58,8 @@ export const Members = () => {
         {/* What Everyone Gets */}
         <div className="mb-14">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={fadeIn ? { opacity: 0, y: 20 } : { y: 20 }}
+            whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="flex items-center gap-4 mb-10"
@@ -70,8 +72,8 @@ export const Members = () => {
             {allMemberPerks.map((perk, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={fadeIn ? { opacity: 0, y: 40 } : { y: 40 }}
+                whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -4 }}

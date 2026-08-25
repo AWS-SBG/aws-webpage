@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useFadeIn } from '../lib/motion';
 
 const SLACK_URL = 'https://join.slack.com/t/mawsbuilders/shared_invite/zt-47pp0sp1e-UpvbV5XT62wXtHbcJrE0bg';
 
@@ -22,6 +23,7 @@ const steps = [
 ];
 
 export const JoinCTA = () => {
+  const fadeIn = useFadeIn();
   return (
     <section className="py-24 px-6 bg-[#00274C] relative overflow-hidden">
       <motion.div
@@ -34,8 +36,8 @@ export const JoinCTA = () => {
       <div className="container mx-auto max-w-5xl relative z-10">
 
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={fadeIn ? { opacity: 0, y: 40 } : { y: 40 }}
+          whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center text-center"
@@ -56,8 +58,8 @@ export const JoinCTA = () => {
           {steps.map((item, index) => (
             <motion.div
               key={item.step}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={fadeIn ? { opacity: 0, y: 30 } : { y: 30 }}
+              whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="bg-white/[0.03] p-8"
@@ -70,8 +72,8 @@ export const JoinCTA = () => {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={fadeIn ? { opacity: 0, y: 20 } : { y: 20 }}
+          whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.7 }}
           className="flex flex-col items-center text-center"

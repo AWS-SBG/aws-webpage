@@ -1,10 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useFadeIn } from '../lib/motion';
 import { ArrowRight } from 'lucide-react';
 
 const roles = ['Secretary', 'Treasurer', 'Marketing Director', 'Bootcamp Director'];
 
 export const CoreTeamCTA = () => {
+  const fadeIn = useFadeIn();
   return (
     <section className="py-24 px-6 bg-[#00274C] relative overflow-hidden">
       {/* Animated blobs */}
@@ -26,8 +28,8 @@ export const CoreTeamCTA = () => {
 
           {/* Left — Headline */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={fadeIn ? { opacity: 0, y: 50 } : { y: 50 }}
+            whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
@@ -47,8 +49,8 @@ export const CoreTeamCTA = () => {
 
           {/* Right — Roles + CTA */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={fadeIn ? { opacity: 0, x: 30 } : { x: 30 }}
+            whileInView={fadeIn ? { opacity: 1, x: 0 } : { x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.8 }}
             className="lg:pl-12 lg:border-l border-white/10"
@@ -58,8 +60,8 @@ export const CoreTeamCTA = () => {
               {roles.map((role, i) => (
                 <motion.span
                   key={role}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={fadeIn ? { opacity: 0, y: 10 } : { y: 10 }}
+                  whileInView={fadeIn ? { opacity: 1, y: 0 } : { y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.3 + i * 0.08, duration: 0.5 }}
                   className="px-4 py-2 bg-white/10 border border-white/10 text-sm font-light text-white rounded-full"
