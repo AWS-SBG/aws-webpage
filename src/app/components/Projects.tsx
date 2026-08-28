@@ -54,6 +54,7 @@ const team: TeamMember[] = [
     gradYear: '',
     interests: [],
     funFact: '',
+    image: '/team/justin-lagman.jpg',
     socials: { linkedin: 'https://www.linkedin.com/in/justin-lagman/' },
   },
   {
