@@ -51,9 +51,12 @@ const team: TeamMember[] = [
   {
     name: 'Justin Lagman',
     title: 'Vice President & Design',
-    gradYear: '',
+    gradYear: '2028',
+    major: 'Masters in UX',
+    hometown: 'Ypsilanti, MI',
     interests: [],
     funFact: '',
+    hotTake: 'iOS liquid glass is genuinely peak design',
     image: '/team/justin-lagman.jpg',
     socials: { linkedin: 'https://www.linkedin.com/in/justin-lagman/' },
   },
