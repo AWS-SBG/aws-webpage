@@ -31,11 +31,11 @@ export const Footer = () => {
             <div>
               <p className="text-white font-bold text-lg mb-2">AWS Student Builder Group at UMich</p>
               <a
-                href="mailto:awsumich@umich.edu"
+                href="mailto:aws-builders@umich.edu"
                 className="inline-flex items-center gap-2 text-sm font-mono text-white/50 hover:text-[#FFCB05] transition-colors mb-6"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FFCB05] animate-pulse" />
-                awsumich@umich.edu
+                aws-builders@umich.edu
               </a>
               <div>
                 <button
@@ -100,17 +100,40 @@ export const Footer = () => {
 
 const ContactModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [error, setError] = useState<string | null>(null);
+  const [fields, setFields] = useState({ name: '', email: '', message: '', website: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const setField = (key: keyof typeof fields) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => setFields((prev) => ({ ...prev, [key]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormState('submitting');
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fields),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? 'Something went wrong. Please try again.');
+      }
+
       setFormState('success');
+      setFields({ name: '', email: '', message: '', website: '' });
       setTimeout(() => {
         onClose();
         setFormState('idle');
       }, 2000);
-    }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setFormState('idle');
+    }
   };
 
   return (
@@ -164,22 +187,49 @@ const ContactModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                     <input
                       required
                       type="text"
+                      name="name"
+                      autoComplete="name"
+                      value={fields.name}
+                      onChange={setField('name')}
                       placeholder="Your Name"
                       className="w-full border-b-2 border-[#00274C]/15 py-3 text-lg font-light text-[#0d1117] focus:outline-none focus:border-[#FFCB05] transition-colors placeholder:text-[#0d1117]/30 bg-transparent"
                     />
                     <input
                       required
                       type="email"
+                      name="email"
+                      autoComplete="email"
+                      value={fields.email}
+                      onChange={setField('email')}
                       placeholder="Email Address"
                       className="w-full border-b-2 border-[#00274C]/15 py-3 text-lg font-light text-[#0d1117] focus:outline-none focus:border-[#FFCB05] transition-colors placeholder:text-[#0d1117]/30 bg-transparent"
                     />
                     <textarea
                       required
+                      name="message"
+                      value={fields.message}
+                      onChange={setField('message')}
                       placeholder="What's on your mind?"
                       rows={4}
                       className="w-full border-b-2 border-[#00274C]/15 py-3 text-lg font-light text-[#0d1117] focus:outline-none focus:border-[#FFCB05] transition-colors resize-none placeholder:text-[#0d1117]/30 bg-transparent"
                     />
+                    {/* Honeypot — hidden from people, catches bots. */}
+                    <input
+                      type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      value={fields.website}
+                      onChange={setField('website')}
+                      className="absolute left-[-9999px] w-px h-px opacity-0"
+                    />
                   </div>
+                  {error && (
+                    <p className="text-sm font-light text-red-600" role="alert">
+                      {error}
+                    </p>
+                  )}
                   <button
                     type="submit"
                     disabled={formState === 'submitting'}
