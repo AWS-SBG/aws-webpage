@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 const TO = process.env.CONTACT_TO ?? 'aws-builders@umich.edu';
-const FROM = process.env.CONTACT_FROM ?? 'onboarding@resend.dev';
+const FROM = process.env.CONTACT_FROM ?? 'noreply@umichbuilders.com';
 
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), {
