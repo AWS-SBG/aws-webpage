@@ -76,7 +76,7 @@ const team: TeamMember[] = [
   {
     name: 'Shiraaz Haidar',
     title: 'Head of Financial Engineering',
-    gradYear: '2029',
+    gradYear: '2030',
     major: 'Computer Science',
     interests: ['AI', 'Design'],
     funFact:
