@@ -50,7 +50,7 @@ const team: TeamMember[] = [
   },
   {
     name: 'Justin Lagman',
-    title: 'Vice President & Design',
+    title: 'Brand Lead',
     gradYear: '2028',
     major: 'Masters in UX',
     hometown: 'Ypsilanti, MI',
